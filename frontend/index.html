@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emotion AI — Multi-Modal Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fa-solid fa-brain"></i>
+        <span>EmotionAI</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-tab="face">
+          <i class="fa-solid fa-face-smile"></i>
+          <span>Facial</span>
+        </button>
+        <button class="nav-btn" data-tab="text">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>Text</span>
+        </button>
+        <button class="nav-btn" data-tab="speech">
+          <i class="fa-solid fa-microphone"></i>
+          <span>Speech</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">Multi-Modal Emotion Detection</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- ── FACE TAB ── -->
+      <section class="tab active" id="tab-face">
+        <div class="tab-header">
+          <h1>Facial Emotion Detection</h1>
+          <p>Real-time emotion analysis powered by CNN</p>
+        </div>
+
+        <div class="face-layout">
+          <div class="card camera-card">
+            <!-- Source toggle -->
+            <div class="source-toggle">
+              <button class="toggle-btn active" id="toggleCamera"><i class="fa-solid fa-video"></i> Camera</button>
+              <button class="toggle-btn" id="toggleUpload"><i class="fa-solid fa-upload"></i> Upload</button>
+            </div>
+
+            <!-- Camera view -->
+            <div id="cameraView">
+              <div class="camera-wrapper">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display:none"></canvas>
+                <div class="camera-overlay" id="camera-overlay">
+                  <i class="fa-solid fa-camera"></i>
+                  <span>Click Start Camera</span>
+                </div>
+              </div>
+              <div class="camera-controls">
+                <button class="btn btn-primary" id="startCamera">
+                  <i class="fa-solid fa-video"></i> Start Camera
+                </button>
+                <button class="btn btn-secondary" id="captureBtn" disabled>
+                  <i class="fa-solid fa-camera"></i> Capture & Analyze
+                </button>
+                <button class="btn btn-ghost" id="stopCamera" disabled>
+                  <i class="fa-solid fa-stop"></i> Stop
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload view -->
+            <div id="uploadView" style="display:none">
+              <label class="image-upload-area" id="imageUploadArea">
+                <img id="uploadPreviewImg" src="" alt="Preview"/>
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Click or drag an image here</span>
+                <small>JPG, PNG, WEBP supported</small>
+                <input type="file" id="imageUpload" accept="image/*" hidden/>
+              </label>
+              <div class="camera-controls" style="margin-top:12px">
+                <button class="btn btn-primary" id="analyzeUploadBtn" disabled>
+                  <i class="fa-solid fa-magnifying-glass"></i> Analyze Image
+                </button>
+              </div>
+            </div>
+
+            <!-- Captured / uploaded image preview -->
+            <div class="captured-preview" id="capturedPreview" style="display:none">
+              <div class="preview-label">Analyzed Image</div>
+              <img id="previewImg" src="" alt="Captured frame"/>
+            </div>
+          </div>
+
+          <div class="results-panel" id="face-results">
+            <div class="results-placeholder">
+              <i class="fa-solid fa-chart-bar"></i>
+              <p>Capture or upload an image to see results</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── TEXT TAB ── -->
+      <section class="tab" id="tab-text">
+        <div class="tab-header">
+          <h1>Text Emotion & Sentiment</h1>
+          <p>detects 7 emotions + sentiment polarity</p>
+        </div>
+
+        <div class="text-layout">
+          <div class="card">
+            <textarea id="textInput" placeholder="Type or paste your text here..." rows="6"></textarea>
+            <div class="text-controls">
+              <span id="charCount">0 characters</span>
+              <button class="btn btn-primary" id="analyzeText">
+                <i class="fa-solid fa-magnifying-glass"></i> Analyze
+              </button>
+            </div>
+          </div>
+
+          <div class="results-panel" id="text-results">
+            <div class="results-placeholder">
+              <i class="fa-solid fa-comment-dots"></i>
+              <p>Enter text to analyze emotions</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SPEECH TAB ── -->
+      <section class="tab" id="tab-speech">
+        <div class="tab-header">
+          <h1>Speech Emotion Recognition</h1>
+          <p>know how your voice sound like!!</p>
+        </div>
+
+        <div class="speech-layout">
+          <div class="card speech-card">
+            <div class="waveform-container">
+              <canvas id="waveform"></canvas>
+              <div class="waveform-placeholder" id="waveform-placeholder">
+                <i class="fa-solid fa-waveform-lines"></i>
+                <span>Ready to record</span>
+              </div>
+            </div>
+            <div class="speech-controls">
+              <button class="btn btn-record" id="recordBtn">
+                <i class="fa-solid fa-microphone"></i> Start Recording
+              </button>
+              <button class="btn btn-secondary" id="analyzeAudio" disabled>
+                <i class="fa-solid fa-paper-plane"></i> Analyze
+              </button>
+              <div class="recording-timer" id="recordTimer" style="display:none">
+                <span class="rec-dot"></span> <span id="timerDisplay">0:00</span>
+              </div>
+            </div>
+            <div class="upload-section">
+              <label class="upload-label">
+                <i class="fa-solid fa-upload"></i> Or upload a WAV file
+                <input type="file" id="audioUpload" accept=".wav,.mp3" hidden/>
+              </label>
+            </div>
+          </div>
+
+          <div class="results-panel" id="speech-results">
+            <div class="results-placeholder">
+              <i class="fa-solid fa-microphone-lines"></i>
+              <p>Record or upload audio to analyze</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Analyzing...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
