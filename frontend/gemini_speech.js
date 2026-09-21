@@ -1,7 +1,7 @@
 const GEMINI_MODEL = "gemini-2.5-flash";
 
 const API_KEYS = [
-  "AIzaSyA9jlMXVI4xMpoL4hOFJShWTJNN0MtqW9U",
+  "YOUR GEMINI API KEY(s)",
   "",
   "",
   "",
